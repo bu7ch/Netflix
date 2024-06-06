@@ -14,5 +14,22 @@ const addUser = async (req, res) => {
     res.json({ message: error.message });
   }
 };
+const login = async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.json({ message: "User not found" });
+    }
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      res.json({ message: "Invalid credentials" });
+    }
+    const token = jwt.sign({id:user._id, email:user.email}, process.env.JWT_SECRET,{expiresIn: '1h'})
+    res.json(token)
+  } catch (error) {
+    res.json({ message: error.message });
+  }
+};
 
-module.exports = {addUser}
+module.exports = { addUser, login };
