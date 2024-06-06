@@ -25,11 +25,23 @@ const login = async (req, res) => {
     if (!isMatch) {
       res.json({ message: "Invalid credentials" });
     }
-    const token = jwt.sign({id:user._id, email:user.email}, process.env.JWT_SECRET,{expiresIn: '1h'})
-    res.json(token)
+    const token = jwt.sign(
+      { id: user._id, email: user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
+    res.json(token);
+  } catch (error) {
+    res.json({ message: error.message });
+  }
+};
+const getUsers = async (req, res) => {
+  try {
+    const users = await User.find();
+    res.json(users);
   } catch (error) {
     res.json({ message: error.message });
   }
 };
 
-module.exports = { addUser, login };
+module.exports = { addUser, login, getUsers };
