@@ -43,5 +43,41 @@ const getUsers = async (req, res) => {
     res.json({ message: error.message });
   }
 };
+const getUserById = async (req, res) => {
+  try {
+    const user = await User.findOne({ _id: req.params.id });
+    if (!user) {
+      return res.json({ message: "User not found" });
+    }
+    res.json(user);
+  } catch (error) {
+    res.json({ message: error.message });
+  }
+};
+const updateUser = async (req, res) => {
+  const { username, email, password } = req.body;
+  try {
+    let updateFields = { username, email };
+    if (password) {
+      updateFields.password = await bcrypt.hash(password, 10);
+    }
+    const user = await User.findOneAndUpdate(
+      { _id: req.params.id },
+      { $set: updateFields },
+      { new: true }
+    );
+    res.json({ message: "User updated", user });
+  } catch (error) {
+    res.json({ message: error.message });
+  }
+};
+const deleteUser = async (req, res) => {
+  try {
+    await User.findOneAndDelete({ _id: req.params.id });
+    res.json({ message: "User deleted successfully" });
+  } catch (error) {
+    res.json({ message: error.message });
+  }
+};
 
-module.exports = { addUser, login, getUsers };
+module.exports = { addUser, login, getUsers,getUserById, updateUser, deleteUser };
