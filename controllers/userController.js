@@ -79,5 +79,8 @@ const deleteUser = async (req, res) => {
     res.json({ message: error.message });
   }
 };
+const logoutUser = (req, res) => {
+  res.json({message: 'user logged out successfully' });
+}
 
-module.exports = { addUser, login, getUsers,getUserById, updateUser, deleteUser };
+module.exports = { addUser, login, getUsers,getUserById, updateUser, deleteUser, logoutUser };
